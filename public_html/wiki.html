@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script>
+		var d = new Date();
+		var begin_time = d.getTime();
+	</script>
+    <title>bz余弦</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="keywords" content="探索学习，知识管理" /> 
+    <meta name="description" content="bz余弦，个人知识管理工具"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Public/Document/css/layout.css">
+    <link rel="stylesheet" href="/Public/Document/css/style.css">
+    <link type="text/css" rel="stylesheet" href="/Public/Document/css/styles/shCore.css"/> 
+    <link type="text/css" rel="stylesheet" href="/Public/Document/css/styles/shThemeDefault.css"/> 
+    <link rel="stylesheet" href="/Public/static/thinktree/skin/default/style.css"> 
+</head>
+<body>
+    <header class="layout">
+           <section class="header">
+              <hgroup>
+                 <h1>bz余弦</h1>
+                 <h2>时间管理,思维轨迹</h2>
+              </hgroup>
+           </section>
+    </header>
+    <aside class="control" >
+          <div>站内搜索:&nbsp; <input id="search" type="search" value="" placeholder="欢迎使用该功能" /></div>
+			<div style="float:left">快捷方式:&nbsp; </div>
+          <input type="button" id="fold" style="float:left" value="全部展开" />
+          <a href="/manage.php" target="_blank" ><input type="button" style="float:left" value="写笔记"  /></a>
+    </aside>
+    <aside class="layout">
+		  <div class="control">
+			导航浏览:
+          <select id="select">
+              <option>目录</option>
+              <option>标签</option>
+          </select>
+			<br/>
+		</div>
+        <nav class="thinktree-default">
+        </nav>
+    </aside>
+    <section class="layout">
+        <article class="book">
+            <section class="content">
+                感谢thinkphp手册的站点主题。<br />life is a cosine function, and tomorrow is x, you never know the value until you have calculated the cosx.<br/><br/> 最新文章:<br/><a href='/p/1146.html' target='_blank' >统计基础： 卡方检验，互信息，person相关系数_数学</a> 2016-08-20 17:45:29 </br><a href='/p/1145.html' target='_blank' >linux x window系统_跨平台</a> 2016-08-20 14:36:08 </br><a href='/p/1144.html' target='_blank' >全站https_技术猿</a> 2016-08-06 10:57:51 </br><a href='/p/1143.html' target='_blank' >行列式_数学</a> 2016-06-17 22:10:12 </br><a href='/p/1142.html' target='_blank' >matlab学习_数学</a> 2016-06-10 08:20:02 </br><a href='/p/1141.html' target='_blank' >不知其然_技术猿</a> 2016-04-24 16:01:56 </br><br/>历史归档:<br/><a href=/p/arch2.html target='_blank'>/p/arch2.html </a><br/> <a href=/p/arch1.html target='_blank'>/p/arch1.html </a><br/> <a href=/p/arch0.html target='_blank'>/p/arch0.html </a><br/> <br/><a href="/p/879.html">关于</a>
+            </section>
+            <footer>
+            </footer>
+        </article>
+     </section>
+     <!-- http://apps.bdimg.com/libs/jquery/1.6.4/jquery.min.js -->
+     <script type="text/javascript" src="/Public/Document/js/jquery.min.js"></script>
+     <script type="text/javascript" src="/Public/Document/js/brush.js"></script>
+     <script type="text/javascript" src="/Public/Document/js/document.js" ></script>
+     <script type="text/javascript" src="/man/list.json.test"></script>
+     <script>
+         main();
+     </script>
+
+     <footer class="layout">
+        <p class="copyright">&copy;2013-2016 网站:bz余弦 站长:bz <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备13068535号-2</a> 友情链接:<a href="http://www.klion26.com/" target="_blank" >klion26</a>,<a href="http://www.sthanks.net/books/MyLibrary/index.php" target="_blank" >海阔天空</a>,  <i id = "load"></i> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5097651'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D5097651%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>  </p>
+     </footer>
+
+	<script>
+		var dd = new Date();
+		var end_time = dd.getTime();
+		var numobj = new Number( end_time - begin_time);
+		document.getElementById("load").innerHTML  = "加载:" + numobj.toString() + " ms";
+
+	</script>
+</body>
+</html>
