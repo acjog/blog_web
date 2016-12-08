@@ -1,9 +1,9 @@
 <?php 
     set_time_limit(0);
-    $g_dbname='zjwdb_110668';
-    $absolute_path = "/usr/local/src/bz_complie/wiki_web/scripts";
-    $link = mysql_connect($search_ip,$search_user,$search_passwd) or die('Could not connect:'.mysql_error());
-    mysql_select_db( $g_dbname ) or die('Could not select database');
+    include 'conf.php';
+    $absolute_path = "{$install_path}/{$script_path}";
+    $link = mysql_connect($search_ip, $search_user,$search_passwd) or die('Could not connect:'.mysql_error());
+    mysql_select_db($g_dbname) or die('Could not select database');
     mysql_query("SET NAMES UTF8");
 
     $words = trim($_POST['keywords']);
@@ -46,7 +46,7 @@
        print_r("没有找到您要搜索的内容");
        exit(0);
     } 
-    $sql=sprintf("SELECT wordId,pageId,TF,istitle FROM %s WHERE wordId in(%s)","zjwdb_110668.v_index",implode(',',$ids));
+    $sql=sprintf("SELECT wordId,pageId,TF,istitle FROM %s WHERE wordId in(%s)","{$g_dbname}.v_index",implode(',',$ids));
     $r = mysql_query($sql);
     if (!$r){
         echo "执行: ".$sql." 出错:".mysql_error();

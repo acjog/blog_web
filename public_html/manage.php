@@ -1,10 +1,9 @@
 <?php 
-    $g_dbname='zjwdb_110668';
     set_time_limit(0);
-    $link = mysql_connect($man_ip,$man_user,$man_passwd) or die('Could not connect:'.mysql_error());
-    mysql_select_db( $g_dbname ) or die('Could not select database');
+	include "conf.php";
+    $link = mysql_connect($man_ip, $man_user, $man_passwd) or die('Could not connect:'.mysql_error());
+    mysql_select_db($g_dbname) or die('Could not select database');
     mysql_query("SET NAMES UTF8");
-
 
     function do_shortcode_tag_keep_escaped_tags($m){
       //$a=$m[5];
@@ -21,7 +20,7 @@
         $articleid=intval($articleid);
         $out=array();
         $r=0;
-        exec("/usr/bin/python /usr/local/src/bz_complie/wiki_web/scripts/dumpdb.py -d /usr/local/src/bz_complie/wiki_web/public_html",$out,$r);
+        exec("/usr/bin/python {$install_path}/{$script_path}/dumpdb.py -d {$install_path}/{$public_html}",$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
@@ -31,14 +30,14 @@
         $r=0;
         unset($out);
         $out=array();
-        exec("/usr/bin/python /usr/local/src/bz_complie/wiki_web/scripts/dumpdb.py  -p {$articleid} "  ,$out,$r);
+        exec("/usr/bin/python  {$install_path}/{$script_path}/dumpdb.py  -p {$articleid} "  ,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
             echo "python dump article出错";
             exit(0);
         }
-        $cmd="/usr/bin/php /usr/local/src/bz_complie/wiki_web/scripts/page.php -p {$articleid} ";
+        $cmd="/usr/bin/php {$install_path}/{$script_path}/page.php -p {$articleid} ";
         $r=0;
         unset($out);
         $out=array();
@@ -52,7 +51,7 @@
         $r=0;
         unset($out);
         $out=array();
-        exec("/usr/bin/python /usr/local/src/bz_complie/wiki_web/scripts/makeindex.py  -p {$articleid} "  ,$out,$r);
+        exec("/usr/bin/python {$install_path}/{$script_path}/makeindex.py  -p {$articleid} "  ,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
@@ -64,7 +63,7 @@
         unset($out);
         //重新生成首页
         $out=array();
-        exec("/usr/bin/php /usr/local/src/bz_complie/wiki_web/scripts/page.php -p 1050" ,$out,$r);
+        exec("/usr/bin/php {$install_path}/{$script_path}/page.php -p 1050" ,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
@@ -283,7 +282,7 @@
 			$r=move_uploaded_file($_FILES["file"]["tmp_name"],
 					$img_path);
                         if ($r){
-			    echo "http://cosx.me/" . $img_path;
+			    echo $img_path;
                         } else {
                             echo "move img file wrong";
                         }
@@ -360,7 +359,7 @@
        <html>
        <head>
        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-       <title>异想天开后台</title>
+       <title>bz余弦后台</title>
        <style>
            .container {
                width:1000px;
@@ -423,7 +422,7 @@
 			}
 		}
        function uploadimg(obj){
-           window.open("https://cosx.me/upload.html?id="+obj,null,"height=600,width=600");
+           window.open("/upload.html?id="+obj,null,"height=600,width=600");
        }
        function  addtag()
        {

@@ -1,9 +1,8 @@
 <?php 
-    $g_dbname='db_name';
-    $link = mysql_connect($search_ip,$search_user,$search_passwd) or die('Could not connect:'.mysql_error());
-    mysql_select_db( $g_dbname ) or die('Could not select database');
+	include "conf.php";
+    $link = mysql_connect($man_ip, $man_user, $man_passwd) or die('Could not connect:'.mysql_error());
+    mysql_select_db($g_dbname) or die('Could not select database');
     mysql_query("SET NAMES UTF8");
-
 
 function do_shortcode_tag_keep_escaped_tags($m){
    // var_dump($m);
@@ -239,4 +238,6 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     echo $filename."\n";
     exec("cd ../public_html/p; chown apache -R ./");
 }
+
+
 ?> 
