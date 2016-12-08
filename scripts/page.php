@@ -13,10 +13,11 @@ function do_shortcode_tag_keep_escaped_tags($m){
 
 function get_nearly_articles($order, $start,$count, &$near_count, &$max_id, &$append_out)
 {
+		global $g_dbname;
 		$ret = 0;
 		$append_out_array=array();
 		//and UNIX_TIMESTAMP( post_date )  >  UNIX_TIMESTAMP( now() ) - 2592000*12 
-		$sql = "SELECT id,post_title as title,post_date, term.name as term,t.taxonomy as type,r.term_taxonomy_id as tax FROM zjwdb_110668.blog_posts as p LEFT JOIN zjwdb_110668.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN zjwdb_110668.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN zjwdb_110668.blog_terms term ON t.term_id=term.term_id WHERE id >= {$start} AND p.post_status='publish' and p.post_type='post' ORDER BY post_date {$order} " ;
+		$sql = "SELECT id,post_title as title,post_date, term.name as term,t.taxonomy as type,r.term_taxonomy_id as tax FROM {$g_dbname}.blog_posts as p LEFT JOIN {$g_dbname}.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN {$g_dbname}.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN {$g_dbname}.blog_terms term ON t.term_id=term.term_id WHERE id >= {$start} AND p.post_status='publish' and p.post_type='post' ORDER BY post_date {$order} " ;
 		//echo $sql;
 		$r = mysql_query($sql);
         if (!$r){
@@ -68,7 +69,7 @@ function history_articles($mindex,$maxid,&$arch)
 	{
     	$arch[] = "/p/arch{$i}.html";
 	}
-
+	global $BASE_PATH,  $public_path, $script_path, $install_path;
 	$max_id=$maxid;
 	$start=$max_id;
 	$index=$mindex;
@@ -76,10 +77,10 @@ function history_articles($mindex,$maxid,&$arch)
 	{
     	$smarty = new Smarty(); //建立smarty实例对象$smarty 
         $smarty->template_dir = "{$install_path}/{$script_path}/"; //设置模板目录 
-        $smarty->compile_dir = BASE_PATH."templates_c"; //设置编译目录 
-        $smarty->cache_dir = BASE_PATH."cache"; //缓存目录 
+        $smarty->compile_dir = $BASE_PATH."templates_c"; //设置编译目录 
+        $smarty->cache_dir = $BASE_PATH."cache"; //缓存目录 
         $smarty->cache_lifetime = 600; //缓存时间 
-        $smarty->config_dir = BASE_PATH."configs";
+        $smarty->config_dir = $BASE_PATH."configs";
         $smarty->caching = false; //缓存方式 
     
         $smarty->left_delimiter = "{%"; 
@@ -111,8 +112,8 @@ function history_articles($mindex,$maxid,&$arch)
         $smarty->assign("ModifyDate",$post_modified);
         $out = $smarty->fetch("page.tpl");
 
-		echo "{$start}_{$max_id}";
-		$filename = "{$install_path}/{$public_html}/p/arch{$index}.html";
+		echo "{$start}_{$max_id}\n";
+		$filename = "{$install_path}/{$public_path}/p/arch{$index}.html";
 		$arch[] = "/p/arch{$index}.html";
 		$index = $index + 1;
 		echo $filename."\n";
@@ -127,11 +128,12 @@ function history_articles($mindex,$maxid,&$arch)
 ini_set('date.timezone','Asia/Shanghai');
 error_reporting(7);
 
-include_once( BASE_PATH.SMARTY_PATH."libs/Smarty.class.php"); //包含smarty类文件 
+include_once( $BASE_PATH.$SMARTY_PATH."libs/Smarty.class.php"); //包含smarty类文件 
+
 
 $params = getopt("p:r:");
 
-$sql = "SELECT id,post_name,post_title as title ,post_content as content ,post_date,guid,post_type,post_status,post_modified, post_excerpt  FROM zjwdb_110668.blog_posts as p  WHERE  post_status='publish' and post_type='post' ";
+$sql = "SELECT id,post_name,post_title as title ,post_content as content ,post_date,guid,post_type,post_status,post_modified, post_excerpt  FROM {$g_dbname}.blog_posts as p  WHERE  post_status='publish' and post_type='post' ";
 
 $pageid=0;
 if($params['p']){
@@ -163,10 +165,11 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 	$seo = $result['post_excerpt'];
     $smarty = new Smarty(); //建立smarty实例对象$smarty 
     $smarty->template_dir = "{$install_path}/{$script_path}/"; //设置模板目录 
-    $smarty->compile_dir = BASE_PATH."templates_c"; //设置编译目录 
-    $smarty->cache_dir = BASE_PATH."cache"; //缓存目录 
+
+    $smarty->compile_dir = $BASE_PATH."templates_c"; //设置编译目录 
+    $smarty->cache_dir = $BASE_PATH."cache"; //缓存目录 
     $smarty->cache_lifetime = 600; //缓存时间 
-    $smarty->config_dir = BASE_PATH."configs";
+    $smarty->config_dir = $BASE_PATH."configs";
     $smarty->caching = false; //缓存方式 
 
     $smarty->left_delimiter = "{%"; 
@@ -215,7 +218,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 		$template_name = "index.tpl";
 	}
     $out = $smarty->fetch($template_name);
-    $filename = "{$install_path}/{$public_html}/p/{$id}.html";
+    $filename = "{$install_path}/{$public_path}/p/{$id}.html";
     $handle = fopen($filename, "w");
     if ($handle){
         fwrite($handle,$out);
@@ -224,7 +227,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
         exit(1);
     }
     if ($pageid==1050){
-        $filename = "{$install_path}/{$public_html}/wiki.html";
+        $filename = "{$install_path}/{$public_path}/wiki.html";
         $handle = fopen($filename, "w");
         if ($handle){
             fwrite($handle,$out);
@@ -234,7 +237,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
         }
     }
     echo $filename."\n";
-    exec("cd ../public_html/p; chown apache -R ./");
+    exec("cd ../{$public_path}/p; chown apache -R ./");
 }
 
 
