@@ -1,0 +1,114 @@
+user  root;
+worker_processes  2;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+	server_tokens  off;
+    log_format  main  '"$time_local" - "$remote_addr" - "$status" - "$request_uri" ';
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+    fastcgi_intercept_errors on;
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+	proxy_cache_path    install_path/cache/proxy  levels=1:2 keys_zone=pnc:300m inactive=30d max_size=100m;
+	proxy_temp_path     install_path/cache/tmp;
+	proxy_cache_key     $host$uri$is_args$args;
+
+    server {
+           listen 80;
+           server_name  www.thinks-bz.com thinks-bz.com;
+           rewrite ^/articles/(.*)$ http://cosx.me/p/$1 permanent;
+           rewrite ^/(.*)$ https://cosx.me/$1 permanent;
+    }
+
+    server {
+	    listen 80;
+	    server_name  www.cosx.me cosx.me;
+		rewrite ^(.*)$  https://$host$1 permanent;
+    }
+
+    # HTTPS server
+    #
+    server {
+        listen       443;
+        server_name  cosx.me www.cosx.me;
+
+        root install_path/public_html/;
+        ssl                  on;
+        ssl_certificate    certificate_list.crt;
+        ssl_certificate_key private.key ;
+
+        ssl_session_timeout  5m;
+
+        ssl_protocols  SSLv2 SSLv3 TLSv1;
+        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers   on;
+
+	    access_log  install_path/logs/access_ssl.log main;
+	    error_log  install_path/logs/error_ssl.log debug;
+    
+
+	    location / {
+	            default_type  text/html;
+                index wiki.html index.html;
+	    }
+		resolver  114.114.114.114 8.8.8.8;
+	    resolver_timeout 5s;
+
+
+       location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            #fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include        fastcgi_params;
+       }
+       location = /manage.php {
+            auth_basic "Restricted"; 
+            auth_basic_user_file $document_root/pass_file.txt;
+            fastcgi_pass   127.0.0.1:9000;
+            #fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            include        fastcgi_params;
+       }
+
+       location ~ upload.html$ {
+            auth_basic "Restricted"; 
+            auth_basic_user_file $document_root/pass_file.txt;
+       } 
+
+       location ~ ^/proxy/(\w+\.)(bdimg\.com|cdncache\.org|douban\.com|gravatar\.com|qlogo\.cn|sinaimg\.cn)(\/.*)$ {
+				proxy_connect_timeout    30s;
+				proxy_read_timeout       30s;
+				proxy_pass	       http://$1$2$3;
+				proxy_cache	      pnc;
+				proxy_cache_valid	200 30d;
+				proxy_cache_lock	 on;
+				proxy_cache_lock_timeout 5s;
+				proxy_cache_use_stale    updating error timeout invalid_header http_500 http_502;
+				add_header	       X-Cache "$upstream_cache_status from cache.ququ";
+				expires		  max;
+		}
+       error_page  404          /404.html;
+    }
+}
