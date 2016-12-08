@@ -4,5 +4,5 @@
 # scripts  脚本目录，主要静态化和建立搜索索引
 # 需要安装软件:
 # jieba分词 python工具包
-# smarty php目录，静态化
+# smarty php模板，静态化
 # mysql 文章存储数据库及分词表
