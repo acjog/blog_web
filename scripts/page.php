@@ -75,7 +75,7 @@ function history_articles($mindex,$maxid,&$arch)
 	for ($i=0; $i<100; $i++)
 	{
     	$smarty = new Smarty(); //建立smarty实例对象$smarty 
-        $smarty->template_dir = "/usr/local/src/bz_complie/wiki_web/scripts/"; //设置模板目录 
+        $smarty->template_dir = "{$install_path}/{$script_path}/"; //设置模板目录 
         $smarty->compile_dir = BASE_PATH."templates_c"; //设置编译目录 
         $smarty->cache_dir = BASE_PATH."cache"; //缓存目录 
         $smarty->cache_lifetime = 600; //缓存时间 
@@ -111,9 +111,8 @@ function history_articles($mindex,$maxid,&$arch)
         $smarty->assign("ModifyDate",$post_modified);
         $out = $smarty->fetch("page.tpl");
 
-        //$filename = "/usr/local/src/bz_complie/wiki_web/public_html/p/arch_{$start}_{$max_id}.html";
 		echo "{$start}_{$max_id}";
-		$filename = "/usr/local/src/bz_complie/wiki_web/public_html/p/arch{$index}.html";
+		$filename = "{$install_path}/{$public_html}/p/arch{$index}.html";
 		$arch[] = "/p/arch{$index}.html";
 		$index = $index + 1;
 		echo $filename."\n";
@@ -127,8 +126,7 @@ function history_articles($mindex,$maxid,&$arch)
 
 ini_set('date.timezone','Asia/Shanghai');
 error_reporting(7);
-define('BASE_PATH',"/usr/local/src/bz_complie/ftp_home/web/test/cssmenu/");
-define('SMARTY_PATH',"Smarty-3.1.14/");
+
 include_once( BASE_PATH.SMARTY_PATH."libs/Smarty.class.php"); //包含smarty类文件 
 
 $params = getopt("p:r:");
@@ -164,7 +162,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 
 	$seo = $result['post_excerpt'];
     $smarty = new Smarty(); //建立smarty实例对象$smarty 
-    $smarty->template_dir = "/usr/local/src/bz_complie/wiki_web/scripts/"; //设置模板目录 
+    $smarty->template_dir = "{$install_path}/{$script_path}/"; //设置模板目录 
     $smarty->compile_dir = BASE_PATH."templates_c"; //设置编译目录 
     $smarty->cache_dir = BASE_PATH."cache"; //缓存目录 
     $smarty->cache_lifetime = 600; //缓存时间 
@@ -217,7 +215,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 		$template_name = "index.tpl";
 	}
     $out = $smarty->fetch($template_name);
-    $filename = "/usr/local/src/bz_complie/wiki_web/public_html/p/{$id}.html";
+    $filename = "{$install_path}/{$public_html}/p/{$id}.html";
     $handle = fopen($filename, "w");
     if ($handle){
         fwrite($handle,$out);
@@ -226,7 +224,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
         exit(1);
     }
     if ($pageid==1050){
-        $filename = "/usr/local/src/bz_complie/wiki_web/public_html/wiki.html";
+        $filename = "{$install_path}/{$public_html}/wiki.html";
         $handle = fopen($filename, "w");
         if ($handle){
             fwrite($handle,$out);

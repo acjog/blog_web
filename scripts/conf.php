@@ -12,4 +12,7 @@ $man_ip='127.0.0.1';
 $man_user='aabbccdd';
 $man_passwd='ddccbbaa';
 
+$BASE_PATH="/usr/local/local";
+$SMARTY_PATH="Smarty-3.1.14/";
+
 ?>
