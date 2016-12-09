@@ -128,6 +128,9 @@ function history_articles($mindex,$maxid,&$arch)
 ini_set('date.timezone','Asia/Shanghai');
 error_reporting(7);
 
+global $BASE_PATH, $SMARTY_PATH;
+#echo $BASE_PATH.$SMARTY_PATH."libs/Smarty.class.php";
+#exit(0);
 include_once( $BASE_PATH.$SMARTY_PATH."libs/Smarty.class.php"); //包含smarty类文件 
 
 

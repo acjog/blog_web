@@ -1,5 +1,5 @@
 <?php 
-
+$debug_flag = false;
 $install_path='where you put public_path and scripts in ';
 $public_path='public_path';
 $script_path='scripts';

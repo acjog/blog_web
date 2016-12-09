@@ -17,10 +17,14 @@
 
     function  exepython($articleid)
     {
+        global $install_path, $script_path, $public_html;
         $articleid=intval($articleid);
         $out=array();
         $r=0;
-        exec("/usr/bin/python {$install_path}/{$script_path}/dumpdb.py -d {$install_path}/{$public_html}",$out,$r);
+        $cmd = "cd {$install_path}/{$script_path}; /usr/bin/python {$install_path}/{$script_path}/dumpdb.py -d {$install_path}/{$public_html}";
+        #echo $cmd;
+        #exit(0);
+        exec($cmd,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
@@ -37,11 +41,11 @@
             echo "python dump article出错";
             exit(0);
         }
-        $cmd="/usr/bin/php {$install_path}/{$script_path}/page.php -p {$articleid} ";
+        $cmd="cd {$install_path}/{$script_path}; /usr/bin/php {$install_path}/{$script_path}/page.php -p {$articleid} ";
         $r=0;
         unset($out);
         $out=array();
-        exec("/usr/bin/php /usr/local/src/bz_complie/wiki_web/scripts/page.php -p {$articleid} " ,$out,$r);
+        exec($cmd ,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
@@ -63,7 +67,7 @@
         unset($out);
         //重新生成首页
         $out=array();
-        exec("/usr/bin/php {$install_path}/{$script_path}/page.php -p 1050" ,$out,$r);
+        exec("cd {$install_path}/{$script_path}; /usr/bin/php {$install_path}/{$script_path}/page.php -p 1050" ,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);
