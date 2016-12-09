@@ -13,9 +13,9 @@
     }
     $r=0;
     $out=array();
-	$vowels = array("/", "|", "%", "&", "#", "(",")" );
-	$words = str_replace($vowels, "", $words);	
-	$words = escapeshellcmd($words);
+    $vowels = array("/", "|", "%", "&", "#", "(",")" );
+    $words = str_replace($vowels, "", $words);	
+    $words = escapeshellcmd($words);
     $cmd=sprintf("/usr/bin/python ${absolute_path}/makeindex.py -q'%s' 2>/dev/null",$words);
     exec($cmd,$out,$r);
     if ($r!=0){ 
