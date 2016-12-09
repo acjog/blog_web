@@ -33,11 +33,16 @@
        print_r("没有找到您要搜索的内容");
        exit(0);
     } 
-    $sql=sprintf("SELECT id,IDF FROM %s WHERE content in (%s) ","zjwdb_110668.v_word", implode(',',$words));
+    $sql=sprintf("SELECT id,IDF FROM %s WHERE content in (%s) ","{$g_dbname}.v_word", implode(',',$words));
     $r = mysql_query($sql);
     if (!$r){
-		echo "执行SQL查询出错";
-        #echo "执行: ".$sql." 出错:".mysql_error();
+        if ($debug_flag) {
+            echo "执行: ".$sql." 出错:".mysql_error();
+        }
+		else
+        {
+            echo "执行SQL查询出错";
+        }
         exit(0);
     }
     $ids=array();
@@ -53,7 +58,13 @@
     $sql=sprintf("SELECT wordId,pageId,TF,istitle FROM %s WHERE wordId in(%s)","{$g_dbname}.v_index",implode(',',$ids));
     $r = mysql_query($sql);
     if (!$r){
-        echo "执行: ".$sql." 出错:".mysql_error();
+        if ($debug_flag) {
+            echo "执行: ".$sql." 出错:".mysql_error();
+        }
+		else
+        {
+            echo "执行SQL查询出错";
+        }
         exit(0);
     }
     $pageid=array();
@@ -76,10 +87,16 @@
             break;
         }
         $index=$index+1;
-        $sql="SELECT id,post_title as title,term.name as term,t.taxonomy as type,r.term_taxonomy_id as tax  FROM zjwdb_110668.blog_posts as p LEFT JOIN zjwdb_110668.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN zjwdb_110668.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN zjwdb_110668.blog_terms term ON  t.term_id=term.term_id  WHERE p.post_status='publish'  and p.post_type='post'"." AND id={$k}"." LIMIT 1";
+        $sql="SELECT id,post_title as title,term.name as term,t.taxonomy as type,r.term_taxonomy_id as tax  FROM {$g_dbname}.blog_posts as p LEFT JOIN {$g_dbname}.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN {$g_dbname}.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN {$g_dbname}.blog_terms term ON  t.term_id=term.term_id  WHERE p.post_status='publish'  and p.post_type='post'"." AND id={$k}"." LIMIT 1";
         $r = mysql_query($sql);
         if (!$r){
-            echo "执行: ".$sql." 出错:".mysql_error();
+            if ($debug_flag) {
+                echo "执行: ".$sql." 出错:".mysql_error();
+            }
+		    else
+            {
+                echo "执行SQL查询出错";
+            }
             exit(0);
         }
         while( $row = mysql_fetch_array($r, MYSQL_ASSOC) ) {
