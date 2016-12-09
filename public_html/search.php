@@ -13,6 +13,9 @@
     }
     $r=0;
     $out=array();
+	$vowels = array("/", "|", "%", "&", "#", "(",")" );
+	$words = str_replace($vowels, "", $words);	
+	$words = escapeshellcmd($words);
     $cmd=sprintf("/usr/bin/python ${absolute_path}/makeindex.py -q'%s' 2>/dev/null",$words);
     exec($cmd,$out,$r);
     if ($r!=0){ 
@@ -33,7 +36,8 @@
     $sql=sprintf("SELECT id,IDF FROM %s WHERE content in (%s) ","zjwdb_110668.v_word", implode(',',$words));
     $r = mysql_query($sql);
     if (!$r){
-        echo "执行: ".$sql." 出错:".mysql_error();
+		echo "执行SQL查询出错";
+        #echo "执行: ".$sql." 出错:".mysql_error();
         exit(0);
     }
     $ids=array();
