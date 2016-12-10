@@ -1,8 +1,8 @@
 /* 基础样式 */
 html,body {
     font: 14px/1.7 "微软雅黑";
-    color:#404040;
-    background-color:#fff;
+    color:#404040;  
+	background-color:#F4F4F4;
 }
 body,p,pre,blockquote,
 h1,h2,h3,h4,h5,h6,          
@@ -90,7 +90,7 @@ textarea {
         overflow: auto;
         width: 94%;
 		line-height:1.5;
-        background-color: #F9F9F9;
+        background-color: #F4F4F4;
         border: 0.1em solid #CCC;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -146,7 +146,7 @@ textarea {
         width: 22.33333333%;
         height: 78px;
         padding: 6px;
-        background-color: #F9F9F9;
+        background-color: #F4F4F4;
         border: 1px solid #CCC;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -163,7 +163,7 @@ textarea {
         overflow: auto;
         width: 22.33333333%;
         padding: 6px;
-        background-color: #F9F9F9;
+        background-color: #F4F4F4;
         border: 1px solid #CCC;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -237,7 +237,7 @@ textarea {
         width: 268px;
         height: 28px;
         padding: 6px;
-        background-color: #F9F9F9;
+        background-color: #F4F4F4;
         border: 1px solid #CCC;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -252,7 +252,7 @@ textarea {
         width: 268px;
         height: 78px;
         padding: 6px;
-        background-color: #F9F9F9;
+        background-color: #F4F4F4;
         border: 1px solid #CCC;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -268,7 +268,7 @@ textarea {
         overflow: auto;
         width: 280px;
 		line-height:2.8;
-        background-color: #F9F9F9;
+        background-color: #F4F4F4;
         border: 1px solid #CCC;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -284,7 +284,7 @@ textarea {
         left: 300px;
         overflow-y: auto;
         border: 1px solid #CCC;
-        background-color: #FFF;
+        background-color: #F4F4F4;
         -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
                 box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
