@@ -20,7 +20,7 @@
     <header class="layout">
            <section class="header">
               <hgroup>
-                 <h1>bz余弦</h1>
+                 <h1><a href="https://cosx.me">bz余弦</a></h1>
                  <h2>时间管理,思维轨迹</h2>
               </hgroup>
            </section>
