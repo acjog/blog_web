@@ -15,4 +15,6 @@ $man_passwd='ddccbbaa';
 $BASE_PATH="/usr/local/local";
 $SMARTY_PATH="Smarty-3.1.14/";
 
+$index_page_id = 1050;
+
 ?>

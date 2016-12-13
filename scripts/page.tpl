@@ -15,6 +15,7 @@
     <link type="text/css" rel="stylesheet" href="/Public/Document/css/styles/shCore.css"/> 
     <link type="text/css" rel="stylesheet" href="/Public/Document/css/styles/shThemeDefault.css"/> 
     <link rel="stylesheet" href="/Public/static/thinktree/skin/default/style.css"> 
+	{%$HeadAppend%}
 </head>
 <body>
     <header class="layout">
@@ -88,6 +89,7 @@
      <footer class="layout">
         <p class="copyright">&copy;2013-2016 网站:bz余弦 站长:bz<a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备13068535号-2</a> 友情链接:<a href="http://www.klion26.com/" target="_blank" >klion26</a>,<a href="http://www.sthanks.net/books/MyLibrary/index.php" target="_blank" >海阔天空</a>,  <i id = "load"></i> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5097651'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D5097651%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>  </p>
      </footer>
+	{%$JSAppend%}
 	<script>
 		var dd = new Date();
 		var end_time = dd.getTime();

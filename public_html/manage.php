@@ -67,7 +67,7 @@
         unset($out);
         //重新生成首页
         $out=array();
-        exec("cd {$install_path}/{$script_path}; /usr/bin/php {$install_path}/{$script_path}/page.php -p 1050" ,$out,$r);
+        exec("cd {$install_path}/{$script_path}; /usr/bin/php {$install_path}/{$script_path}/page.php -p {$index_page_id}" ,$out,$r);
         if ($r!=0){
             print_r($r);
             print_r($out);

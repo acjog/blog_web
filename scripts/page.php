@@ -1,6 +1,10 @@
 <?php 
 	include "conf.php";
-    $link = mysql_connect($man_ip, $man_user, $man_passwd) or die('Could not connect:'.mysql_error());
+    $link = mysql_connect($search_ip, $search_user, $search_passwd) or die('Could not connect:'.mysql_error());
+    mysql_select_db($g_dbname) or die('Could not select database');
+    mysql_query("SET NAMES UTF8");
+
+    $link_dup = mysql_connect($search_ip, $search_user, $search_passwd) or die('Could not connect:'.mysql_error());
     mysql_select_db($g_dbname) or die('Could not select database');
     mysql_query("SET NAMES UTF8");
 
@@ -29,7 +33,7 @@ function get_nearly_articles($order, $start,$count, &$near_count, &$max_id, &$ap
         $near_count = 0;
 		$max_id=0;
         while( $row = mysql_fetch_array($r, MYSQL_ASSOC) ) {
-            $out=sprintf("<a href='/p/{$row["id"]}.html' target='_blank' >{$row['title']}_{$row['term']}</a> {$row['post_date']} </br>");
+            $out=sprintf("<a href='/p/{$row["id"]}.html' >{$row['title']}_{$row['term']}</a> {$row['post_date']} </br>");
 			if ($near_count < $count && !in_array($row["title"], $filterout_repeat) )
 			{
 				$filterout_repeat[] = $row["title"];
@@ -181,7 +185,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     $smarty->assign("Title", $title); //进行模板变量替换 
 	$smarty->assign("SEO", $seo);
 	$near_count=0;
-	if ( $pageid == 1050 )
+	if ( $pageid == $index_page_id )
 	{
 		$append_out = "<br/><br/> 最新文章:<br/>";
 		$near_count=0;
@@ -215,8 +219,35 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 	$smarty->assign("PageId", $id);
     $smarty->assign("Url","cosx.me/p/{$id}.html");
     //$smarty->display("page.tpl");
+	//检查是否需要插入支持latex的mathjax插件js，因为mathjax加载js较大
+    //这里判断当文章在math_latex标签下时，则需要插入
+    $sql = "SELECT id,post_title as title,term.name,t.taxonomy as type,r.term_taxonomy_id as tax  FROM blog_posts as p LEFT JOIN blog_term_relationships as r     ON p.id=r.object_id LEFT JOIN blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN blog_terms term ON  t.term_id=term.term_id  WHERE p.post_status='publish' AND p.post_type='post' AND p.id = {$id} AND term.name ='math_latex' ";
+	$r_dup = mysql_query($sql);
+	if (!$r_dup){
+   		echo "执行: ".$sql." 出错:".mysql_error();
+	    exit(0);
+	}
+	while( $result_tmp = mysql_fetch_array($r_dup, MYSQL_ASSOC) ) {
+		if ( count($result_tmp) )
+		{
+			$smarty->assign("HeadAppend", '<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  jax: ["input/TeX","output/HTML-CSS", "output/PreviewHTML"],
+  extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "AssistiveMML.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  }
+});
+
+</script> ');
+			$smarty->assign("JSAppend", '<script type="text/javascript" async
+  src="/Public/Document/js/MathJax/MathJax.js?config=TeX-AMS_CHTML">
+</script>');
+		}	
+	} 
+
 	$template_name = "page.tpl";
-	if ( $pageid == 1050 )
+	if ( $pageid == $index_page_id )
 	{
 		$template_name = "index.tpl";
 	}
@@ -229,7 +260,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     } else {
         exit(1);
     }
-    if ($pageid==1050){
+    if ($pageid== $index_page_id ){
         $filename = "{$install_path}/{$public_path}/wiki.html";
         $handle = fopen($filename, "w");
         if ($handle){
