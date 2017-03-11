@@ -21,8 +21,8 @@
     <header class="layout">
            <section class="header">
               <hgroup>
-                 <h1><a href="https://cosx.me">bz余弦</a></h1>
-                 <h2>时间管理,思维轨迹</h2>
+                 <h1><a href="https://cosx.me">{%$Site_name%}</a></h1>
+                 <h2>{%$Site_desc%}</h2>
               </hgroup>
            </section>
     </header>
@@ -87,7 +87,7 @@
 	</script>
 <!-- 多说公共JS代码 end -->
      <footer class="layout">
-        <p class="copyright">&copy;2013-2016 网站:bz余弦 站长:bz<a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备13068535号-2</a> 友情链接:<a href="http://www.klion26.com/" target="_blank" >klion26</a>,<a href="http://www.sthanks.net/books/MyLibrary/index.php" target="_blank" >海阔天空</a>,  <i id = "load"></i> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5097651'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D5097651%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>  </p>
+        <p class="copyright">&copy;2013-2017 网站:{%$Site_name%}<a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备13068535号-2</a> 友情链接:<a href="http://www.klion26.com/" target="_blank" >klion26</a> <i id = "load"></i> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5097651'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D5097651%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>  </p>
      </footer>
 	{%$JSAppend%}
 	<script>

@@ -133,6 +133,7 @@ ini_set('date.timezone','Asia/Shanghai');
 error_reporting(7);
 
 global $BASE_PATH, $SMARTY_PATH;
+global $site_name, $site_desc;
 #echo $BASE_PATH.$SMARTY_PATH."libs/Smarty.class.php";
 #exit(0);
 include_once( $BASE_PATH.$SMARTY_PATH."libs/Smarty.class.php"); //包含smarty类文件 
@@ -184,6 +185,9 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     $smarty->assign("SiteName", $title); //进行模板变量替换 
     $smarty->assign("Title", $title); //进行模板变量替换 
 	$smarty->assign("SEO", $seo);
+	$smarty->assign("Site_name", $site_name);
+	$smarty->assign("Site_desc",$site_desc);
+
 	$near_count=0;
 	if ( $pageid == $index_page_id )
 	{
@@ -218,6 +222,8 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     $smarty->assign("ModifyDate",$post_modified);
 	$smarty->assign("PageId", $id);
     $smarty->assign("Url","cosx.me/p/{$id}.html");
+	$smarty->assign("Site_name", $site_name);
+	$smarty->assign("Site_desc",$site_desc);
     //$smarty->display("page.tpl");
 	//检查是否需要插入支持latex的mathjax插件js，因为mathjax加载js较大
     //这里判断当文章在math_latex标签下时，则需要插入
