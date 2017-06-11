@@ -29,7 +29,7 @@
           <div>站内搜索:&nbsp; <input id="search" type="search" value="" placeholder="欢迎使用该功能" /></div>
 			<div style="float:left">快捷方式:&nbsp; </div>
           <input type="button" id="fold" style="float:left" value="全部展开" />
-          <a href="/manage.php" target="_blank" ><input type="button" style="float:left" value="写笔记"  /></a>
+		  <input type="button" id="new" style="float:left" value="写笔记" />
     </aside>
     <aside class="layout">
 		  <div class="control">

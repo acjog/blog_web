@@ -45,6 +45,13 @@ function getQueryString(name) {
     if (r != null) return unescape(r[2]); return null;
 }
 
+function getPageId()
+{
+	var reg = new RegExp(".*\/([0-9]+)\.html.*");
+	var r = window.location.href.match(reg);
+	if (r != null) return r[1]; return "new";
+}
+
 function  tagordirectory(){
     var hash=window.location.hash;
     if (hash!=undefined && hash!=''){
@@ -179,6 +186,14 @@ function init(){
             return false;
         }
     });
+	//写笔记
+	$("#new").click( function() {
+		id = getPageId();
+		window.location = "/manage.php?p=" + id;	
+		r =  "/manage.php?p=" + id;
+		console.log(r);
+	}
+	);
     //目录与标签选择
     $("#select").change( function () {
         var checkvalue=$("#select").val();
@@ -243,12 +258,6 @@ function createTree($li,data)
 function initTree(json)
 {
     var $menue = $('nav');
-//    var li="<ul><li><div><i class='tree-icon-switch'></i><i class='tree-icon-item'></i><a href='#'>a</a></div></li></ul>";
-//    var li=document.createElement("li");
-//    li.innerHTML = "<div>aaa</div>";
-//    menue.appendChild(li);
-//    var mi=menue.lastChild;
-//    mi.innerHTML = "<div>bbbb</div>";
     createTree($menue,json["data"]);
     $('nav ul:first').attr("class","thinktree-showline"); //显示线条
 }

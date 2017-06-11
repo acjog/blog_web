@@ -30,7 +30,7 @@
           <div>站内搜索:&nbsp; <input id="search" type="search" value="" placeholder="欢迎使用该功能" /></div>
 			<div style="float:left">快捷方式:&nbsp; </div>
           <input type="button" id="fold" style="float:left" value="全部展开" />
-          <a href="/manage.php" target="_blank" ><input type="button" style="float:left" value="写笔记"  /></a>
+		  <input type="button" id="new" style="float:left" value="写笔记" />
     </aside>
     <aside class="layout">
 		  <div class="control">
@@ -57,9 +57,16 @@
             <section class="content">
                 {%$Content%}
             </section>
-<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="{%$PageId%}" data-title="{%$Title%}" data-url="{%$Url%}"></div>
-<!-- 多说评论框 end -->
+		<!-- 畅言 PC和WAP自适应版-->
+		<div id="SOHUCS" sid= "{%$PageId%}" ></div> 
+		<script type="text/javascript"> 
+		(function(){ 
+		var appid = 'cysUE9swy'; 
+		var conf = 'prod_af8a42e481949af8b55ce177849227e1'; 
+		var width = window.innerWidth || document.documentElement.clientWidth; 
+		if (width < 960) { 
+		window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://cosx.me/proxy/changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://cosx.me/proxy/changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script> 
+		<!-- 畅言 PC和WAP自适应版 end-->
             <footer>
             </footer>
         </article>
@@ -72,20 +79,6 @@
      <script>
          main();
      </script>
-
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-    <script type="text/javascript">
-    var duoshuoQuery = {short_name:"cosx"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//cosx.me/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-<!-- 多说公共JS代码 end -->
      <footer class="layout">
         <p class="copyright">&copy;2013-2017 网站:{%$Site_name%}<a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备13068535号-2</a> 友情链接:<a href="http://www.klion26.com/" target="_blank" >klion26</a> <i id = "load"></i> <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5097651'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D5097651%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>  </p>
      </footer>
