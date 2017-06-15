@@ -5,3 +5,4 @@ remote_movie_dbname=''
 remote_movie_user=''
 
 script_abs_path=
+g_db_name=''

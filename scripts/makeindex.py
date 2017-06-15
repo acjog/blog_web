@@ -77,8 +77,8 @@ def map_intValue_total(m):
     return total_num;
 
 def impl_create_page_index(id,title_map,total_words,istitle):
-    tblword="zjwdb_110668.v_word"
-    tblindex="zjwdb_110668.v_index"
+    tblword="%s.v_word" % g_db_name
+    tblindex="%s.v_index" % g_db_name
     global remote_db
     remote_cur=remote_db.cursor()
  
@@ -111,8 +111,8 @@ def clear_page_index(id):
     if 0==id:
         return
     
-    tbl_index = "zjwdb_110668.v_index"
-    tbl_word = "zjwdb_110668.v_word"
+    tbl_index = "%s.v_index" % g_db_name
+    tbl_word = "%s.v_word" %  g_db_name
     sql = "SELECT wordId FROM %s WHERE pageId=%d " % (tbl_index,id)
     remote_cur.execute(sql)
     wordid_li=[]
@@ -137,7 +137,7 @@ def create_page_index(id):
     if 0==id:
         return
 
-    sql = "SELECT id,post_name,post_title as title ,post_content as content ,UNIX_TIMESTAMP(post_date) as post_date,guid,post_type,post_status,UNIX_TIMESTAMP(post_modified) as post_modified  FROM zjwdb_110668.blog_posts as p  WHERE  post_status='publish' and post_type='post' AND id=%d " % id
+    sql = "SELECT id,post_name,post_title as title ,post_content as content ,UNIX_TIMESTAMP(post_date) as post_date,guid,post_type,post_status,UNIX_TIMESTAMP(post_modified) as post_modified  FROM %s.blog_posts as p  WHERE  post_status='publish' and post_type='post' AND id=%d " % (g_db_name, id )
     key_dict=['id','post_name','title','content','post_date','guid','post_type','post_status','post_modified']
     remote_cur.execute(sql)
     
@@ -155,12 +155,12 @@ def create_page_index(id):
 
 
 def cal_word_weight():
-    tblword="zjwdb_110668.v_word"
-    tbloptions="zjwdb_110668.v_options"
+    tblword="%s.v_word" % g_db_name
+    tbloptions="%s.v_options" % g_db_name
     global remote_db
     remote_cur=remote_db.cursor()
     #计算出所有发布页面
-    sql = "SELECT count(distinct id) FROM zjwdb_110668.blog_posts as p  WHERE  post_status='publish' and post_type='post' "
+    sql = "SELECT count(distinct id) FROM %s.blog_posts as p  WHERE  post_status='publish' and post_type='post' " % g_db_name
     remote_cur.execute(sql)
     row=remote_cur.fetchone()
     total_num=row[0]
@@ -181,12 +181,13 @@ def cal_word_weight():
 
 
 def create_index(id):
-    tbloptions="zjwdb_110668.v_options"
+    tbloptions="%s.v_options" % g_db_name
     global remote_db
     remote_cur=remote_db.cursor()
-    sql = "SELECT distinct id FROM zjwdb_110668.blog_posts as p  WHERE  post_status='publish' and post_type='post' "
+    sql = "SELECT distinct id FROM %s.blog_posts as p  WHERE  post_status='publish' and post_type='post' " % g_db_name
     if id :
         sql += " AND id=%d" % id
+		#若是修改文章，则清空之前存在的索引
         clear_page_index(id)
 
     remote_cur.execute(sql)
@@ -195,7 +196,7 @@ def create_index(id):
     for row in results:
         create_page_index(row[0])
 
-    sql = "SELECT count(distinct id) FROM zjwdb_110668.blog_posts as p  WHERE  post_status='publish' and post_type='post' "
+    sql = "SELECT count(distinct id) FROM %s.blog_posts as p  WHERE  post_status='publish' and post_type='post' " % g_db_name
     remote_cur.execute(sql)
     row=remote_cur.fetchone()
     total_num=row[0]
@@ -205,7 +206,7 @@ def create_index(id):
 def _imp_flush(tblname):
     global remote_db
     remote_cur=remote_db.cursor()
-    tbl = "zjwdb_110668.%s" % tblname
+    tbl = "g_db_name.%s" % (g_db_name,tblname)
     sql = "flush table %s " % tbl
     remote_cur.execute(sql)
 
