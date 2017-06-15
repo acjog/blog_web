@@ -162,6 +162,10 @@
 
     $action=$_POST['action'];
     //echo "</br>action:".$action;exit(0);
+	if ( $action != "" )
+	{
+		header("Content-type: text/html; charset=utf-8"); 
+	}
     if ($action=='write'){
         $content=addslashes($_POST['content']);
         $title=addslashes(htmlspecialchars($_POST['title']));
