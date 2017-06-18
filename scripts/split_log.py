@@ -45,10 +45,13 @@ if __name__ == '__main__':
         #print li[4]
         id_str=li[4].split("#")[0]
         #print id_str
-        pageid_m = re_id.match(id_str)
-        if not pageid_m:
-            continue
-        pageid = pageid_m.group(1)
+        if id_str == "\"/\"":
+           pageid = 1050;
+        else:
+           pageid_m = re_id.match(id_str)
+           if not pageid_m:
+               continue
+           pageid = pageid_m.group(1)
         remote_cur=remote_db.cursor()
         t_str = datetime.strptime(li[0],"\"%d/%b/%Y:%H:%M:%S +0800\"").strftime("%Y-%m-%d %H:%M:%S")
         ip=li[1].strip().split("\"")[1]
