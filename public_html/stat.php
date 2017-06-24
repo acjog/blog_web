@@ -22,6 +22,27 @@
        return $title_s;
     }
 
+    function ViewDetail($id, $d_s, $d_e)
+    {
+		     global $g_dbname;
+			 $sql = "SELECT pageid,viewtime, viewagent,viewip,viewstatus FROM {$g_dbname}.blogstat WHERE viewtime > '{$d_s}' AND viewtime <= '{$d_e}' AND pageid = {$id}  order by viewip desc ";
+			//$sql=sprintf($sql_f,$g_dbname, $d_s, $d_e);
+			$r = mysql_query($sql);
+			if (!$r){
+				   echo "执行: ".$sql." 出错:".mysql_error();
+				   exit(0);
+			}
+            $title = getTitle($id);
+            echo  "{$title}";
+			echo '<div  class="table-c"> <table border=0 width="800px">';
+			while( $row = mysql_fetch_array($r, MYSQL_ASSOC) ) {
+				$tr_s = "<tr><td> <a href=\"/p/{$id}.html\">{$id}</a> </td> <td>{$row['viewip']}</td> <td>{$row['viewagent']}</td><td>{$row['viewtime']}</td><td>{$row['viewstatus']}</td></tr>";
+				echo $tr_s;
+			} 
+		   echo "</table> </div> </br></br>";     
+
+    }
+
     function topN($d_s, $d_e)
     {
 			 $sql_f = "SELECT pageid, count(*) as num FROM %s.blogstat WHERE viewtime > '%s' AND viewtime <= '%s' GROUP BY pageid order by num desc limit 10";
@@ -36,7 +57,7 @@
 			echo '<div  class="table-c"> <table border=0 width="600px">';
 			while( $row = mysql_fetch_array($r, MYSQL_ASSOC) ) {
                 $title = getTitle($row["pageid"]);
-				$tr_s = sprintf('<tr><td> <a href="/p/%s.html">%s</a> </td> <td>%s</td> <td>%s</td></tr>', $row["pageid"], $row["pageid"], $title, $row["num"]);
+				$tr_s = sprintf('<tr><td> <a href="/p/%s.html">%s</a> </td> <td>%s</td> <td> <a href="/stat.php?pageid=%s">%s</a></td></tr>', $row["pageid"], $row["pageid"], $title, $row["pageid"], $row["num"]);
 				echo $tr_s;
 			} 
 		   echo "</table> </div> </br></br>";     
@@ -47,39 +68,62 @@
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <title>后台统计</title>
 	<style>
-		.table-c table{border-right:1px solid #F00;border-bottom:1px solid #F00}
-		.table-c table td{border-left:1px solid #F00;border-top:1px solid #F00}
+		.table-c table{border-right:1px solid #000;border-bottom:1px solid #000}
+		.table-c table td{border-left:1px solid #000;border-top:1px solid #000}
 	</style>
    </head>
    <body>
    <center>
 <?php
-	echo "今日访问量前十:</br>";
-    $d = strtotime("yesterday");
-    $d_s = date("Y-m-d 00:00:00", $d); 
-    $d_e = date("Y-m-d 00:00:00"); 
+    if ( isset($_GET['pageid']) )
+    {
 
-    topN($d_s, $d_e);
-	echo "一周访问量前十:</br>";
-    $d = strtotime("last week");
-    $d_s = date("Y-m-d 00:00:00", $d); 
-    $d_e = date("Y-m-d 00:00:00"); 
-    topN($d_s, $d_e);
-	echo "一月访问量前十:</br>";
-    $d = strtotime("-1 month");
-    $d_s = date("Y-m-d 00:00:00", $d); 
-    $d_e = date("Y-m-d 00:00:00"); 
-    topN($d_s, $d_e);
-	echo "三月访问量前十:</br>";
-    $d = strtotime("-3 month");
-    $d_s = date("Y-m-d 00:00:00", $d); 
-    $d_e = date("Y-m-d 00:00:00"); 
-    topN($d_s, $d_e);
-	echo "历史访问量前十:</br>";
-    $d = strtotime("-300 month");
-    $d_s = date("Y-m-d 00:00:00", $d); 
-    $d_e = date("Y-m-d 00:00:00"); 
-    topN($d_s, $d_e);
+	    $pageid = intval($_GET['pageid']);
+
+    }
+    if ( isset($_GET['period']) )
+    {
+        $period = intval($_GET['period']);
+    }
+
+    if ($pageid != 0)
+    {
+        echo "详细数据 - {$pageid} <br/>";
+		$d = strtotime("yesterday");
+		$d_s = date("Y-m-d 00:00:00", $d); 
+		$d_e = date("Y-m-d 00:00:00"); 
+        ViewDetail($pageid,$d_s, $d_e);
+    }
+    else
+    {
+			echo "今日",date("Y-m-d"),"报表</br>";
+			echo "昨日访问量前十:</br>";
+			$d = strtotime("yesterday");
+			$d_s = date("Y-m-d 00:00:00", $d); 
+			$d_e = date("Y-m-d 00:00:00"); 
+
+			topN($d_s, $d_e);
+			echo "一周访问量前十:</br>";
+			$d = strtotime("last week");
+			$d_s = date("Y-m-d 00:00:00", $d); 
+			$d_e = date("Y-m-d 00:00:00"); 
+			topN($d_s, $d_e);
+			echo "一月访问量前十:</br>";
+			$d = strtotime("-1 month");
+			$d_s = date("Y-m-d 00:00:00", $d); 
+			$d_e = date("Y-m-d 00:00:00"); 
+			topN($d_s, $d_e);
+			echo "三月访问量前十:</br>";
+			$d = strtotime("-3 month");
+			$d_s = date("Y-m-d 00:00:00", $d); 
+			$d_e = date("Y-m-d 00:00:00"); 
+			topN($d_s, $d_e);
+			echo "历史访问量前十:</br>";
+			$d = strtotime("-300 month");
+			$d_s = date("Y-m-d 00:00:00", $d); 
+			$d_e = date("Y-m-d 00:00:00"); 
+			topN($d_s, $d_e);
+    }
 ?>
    </center>
    </body>
