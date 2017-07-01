@@ -22,10 +22,15 @@
        return $title_s;
     }
 
-    function ViewDetail($id, $d_s, $d_e)
+    function ViewDetail($id, $d_s, $d_e, $filter)
     {
 		     global $g_dbname;
-			 $sql = "SELECT pageid,viewtime, viewagent,viewip,viewstatus FROM {$g_dbname}.blogstat WHERE viewtime > '{$d_s}' AND viewtime <= '{$d_e}' AND pageid = {$id}  order by viewip desc ";
+             $search_str="";
+             if ( $filter )
+             {
+                 $search_str=" AND searchengine is null ";
+             }
+			 $sql = "SELECT pageid,viewtime, viewagent,viewip,viewstatus FROM {$g_dbname}.blogstat WHERE viewtime > '{$d_s}' AND viewtime <= '{$d_e}' AND pageid = {$id}  {$search_str} order by viewip desc ";
 			//$sql=sprintf($sql_f,$g_dbname, $d_s, $d_e);
 			$r = mysql_query($sql);
 			if (!$r){
@@ -43,10 +48,13 @@
 
     }
 
-    function topN($d_s, $d_e, $N)
+    function topN($d_s, $d_e, $N, $filter)
     {
-			 $sql_f = "SELECT pageid, count(*) as num FROM %s.blogstat WHERE viewtime > '%s' AND viewtime <= '%s' GROUP BY pageid order by num desc limit {$N}";
-			//echo $sql_f;exit(0);
+		     if ( $filter )
+             {
+                 $search_str=" AND searchengine is null ";
+             }
+			 $sql_f = "SELECT pageid, count(*) as num FROM %s.blogstat WHERE viewtime > '%s' AND viewtime <= '%s' {$search_str}  GROUP BY pageid order by num desc limit {$N}";
 			$sql=sprintf($sql_f,$g_dbname, $d_s, $d_e);
 			//echo $sql;exit(0);
 			$r = mysql_query($sql);
@@ -57,7 +65,7 @@
 			echo '<div  class="table-c"> <table border=0 width="600px">';
 			while( $row = mysql_fetch_array($r, MYSQL_ASSOC) ) {
                 $title = getTitle($row["pageid"]);
-				$tr_s = sprintf('<tr><td> <a href="/p/%s.html">%s</a> </td> <td>%s</td> <td> <a href="/stat.php?pageid=%s">%s</a></td></tr>', $row["pageid"], $row["pageid"], $title, $row["pageid"], $row["num"]);
+				$tr_s = sprintf('<tr><td> <a href="/p/%s.html">%s</a> </td> <td>%s</td> <td> <a href="/stat.php?pageid=%s&filter=%d">%s</a></td></tr>', $row["pageid"], $row["pageid"], $title, $row["pageid"],$filter, $row["num"]);
 				echo $tr_s;
 			} 
 		   echo "</table> </div> </br></br>";     
@@ -85,44 +93,50 @@
     {
         $period = intval($_GET['period']);
     }
-
+    $filter = 0;
+    if ( isset($_GET['filter']) )
+    {
+		$filter = intval( $_GET['filter'] );
+    }
+    echo '<a href="/stat.php?filter=1">过滤搜索引擎</a><br/>';
+    echo '<a href="/stat.php?filter=0">不过滤搜索引擎</a><br/>';
     if ($pageid != 0)
     {
         echo "详细数据 - {$pageid} <br/>";
 		$d = strtotime("yesterday");
 		$d_s = date("Y-m-d 00:00:00", $d); 
 		$d_e = date("Y-m-d 00:00:00"); 
-        ViewDetail($pageid,$d_s, $d_e);
+        ViewDetail($pageid,$d_s, $d_e, $filter);
     }
     else
     {
 			echo "今日",date("Y-m-d"),"报表</br>";
-			echo "昨日访问量前十:</br>";
+			echo "昨日访问量:</br>";
 			$d = strtotime("yesterday");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
 
-			topN($d_s, $d_e, 1000);
+			topN($d_s, $d_e, 1000, $filter);
 			echo "一周访问量前十:</br>";
 			$d = strtotime("last week");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e, 10);
+			topN($d_s, $d_e, 10, $filter);
 			echo "一月访问量前十:</br>";
 			$d = strtotime("-1 month");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e, 10);
+			topN($d_s, $d_e, 10, $filter);
 			echo "三月访问量前十:</br>";
 			$d = strtotime("-3 month");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e, 10);
+			topN($d_s, $d_e, 10, $filter);
 			echo "历史访问量前十:</br>";
 			$d = strtotime("-300 month");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e, 10);
+			topN($d_s, $d_e, 10, $filter);
     }
 ?>
    </center>

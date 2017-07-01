@@ -27,8 +27,7 @@ if __name__ == '__main__':
    log_path = sys.argv[1]
    bak_file="%s.%f" % (log_path,time.time())
    os.system("mv %s %s" % (log_path, bak_file))
-   
- 
+
    nginx_pid_path = sys.argv[2]  
    fp = open(nginx_pid_path)
    for line in fp:
@@ -38,6 +37,7 @@ if __name__ == '__main__':
 
    #insert db
    re_id = re.compile("\"/p/([0-9]+).html\"$", re.U)
+   r_searchengine = re.compile("(Googlebot|YisouSpider|Baiduspider|Sogou web spider|360Spider|AhrefsBot|Yahoo! Slurp|bingbot|mj12bot|YandexBot|coccocbot|Baidu-YunGuanCe-SLABot)")
    fp = open(bak_file)
    for line in fp:
         line = line.strip()
@@ -58,7 +58,12 @@ if __name__ == '__main__':
         agent=li[2].strip().split("\"")[1]
         status_s=li[3].strip().split("\"")[1]
         #print pageid, t_str, agent , li[0]
-        sql = "INSERT INTO blogstat set pageid=%s, viewtime='%s',viewip='%s', viewagent='%s', viewstatus=%s  " % (pageid, t_str, ip, agent,status_s)
+        searchengine=""
+        rr = r_searchengine.search(agent) 
+        if rr:
+            searchengine = rr.group(0)
+            searchengine = ",searchengine='%s'" % searchengine
+        sql = "INSERT INTO testme set pageid=%s, viewtime='%s',viewip='%s', viewagent='%s', viewstatus=%s  %s " % (pageid, t_str, ip, agent,status_s, searchengine)
         #print sql
         remote_cur.execute(sql)
  

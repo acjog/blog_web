@@ -106,7 +106,7 @@
          $pageid[$k]  = $v + $id_wordlen[ $page_maxmatch_word[$k] ] /10.0;
 	}
     arsort($pageid);
-    var_dump($pageid);
+    //var_dump($pageid);
     $index=1;
     foreach ($pageid as $k=>$v){
         if ($index>10){
