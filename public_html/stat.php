@@ -43,9 +43,9 @@
 
     }
 
-    function topN($d_s, $d_e)
+    function topN($d_s, $d_e, $N)
     {
-			 $sql_f = "SELECT pageid, count(*) as num FROM %s.blogstat WHERE viewtime > '%s' AND viewtime <= '%s' GROUP BY pageid order by num desc limit 10";
+			 $sql_f = "SELECT pageid, count(*) as num FROM %s.blogstat WHERE viewtime > '%s' AND viewtime <= '%s' GROUP BY pageid order by num desc limit {$N}";
 			//echo $sql_f;exit(0);
 			$sql=sprintf($sql_f,$g_dbname, $d_s, $d_e);
 			//echo $sql;exit(0);
@@ -102,27 +102,27 @@
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
 
-			topN($d_s, $d_e);
+			topN($d_s, $d_e, 1000);
 			echo "一周访问量前十:</br>";
 			$d = strtotime("last week");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e);
+			topN($d_s, $d_e, 10);
 			echo "一月访问量前十:</br>";
 			$d = strtotime("-1 month");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e);
+			topN($d_s, $d_e, 10);
 			echo "三月访问量前十:</br>";
 			$d = strtotime("-3 month");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e);
+			topN($d_s, $d_e, 10);
 			echo "历史访问量前十:</br>";
 			$d = strtotime("-300 month");
 			$d_s = date("Y-m-d 00:00:00", $d); 
 			$d_e = date("Y-m-d 00:00:00"); 
-			topN($d_s, $d_e);
+			topN($d_s, $d_e, 10);
     }
 ?>
    </center>
