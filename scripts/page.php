@@ -15,13 +15,18 @@ function do_shortcode_tag_keep_escaped_tags($m){
     return  sprintf('<pre name="code" class="brush: java;">%s</pre>',$a);
 }
 
-function get_nearly_articles($order, $start,$count, &$near_count, &$max_id, &$append_out)
+function get_nearly_articles($order, $start,$count, &$near_count, &$max_id, &$append_out, $post_date)
 {
 		global $g_dbname;
 		$ret = 0;
 		$append_out_array=array();
 		//and UNIX_TIMESTAMP( post_date )  >  UNIX_TIMESTAMP( now() ) - 2592000*12 
-		$sql = "SELECT id,post_title as title,post_date, term.name as term,t.taxonomy as type,r.term_taxonomy_id as tax FROM {$g_dbname}.blog_posts as p LEFT JOIN {$g_dbname}.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN {$g_dbname}.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN {$g_dbname}.blog_terms term ON t.term_id=term.term_id WHERE id >= {$start} AND p.post_status='publish' and p.post_type='post' ORDER BY post_date {$order} " ;
+        $post_date_str = "post_date";
+        if ( $post_date != 1 )
+        {
+			$post_date_str = "post_modified";
+        }
+		$sql = "SELECT id,post_title as title,post_date,post_modified, term.name as term,t.taxonomy as type,r.term_taxonomy_id as tax FROM {$g_dbname}.blog_posts as p LEFT JOIN {$g_dbname}.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN {$g_dbname}.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN {$g_dbname}.blog_terms term ON t.term_id=term.term_id WHERE id >= {$start} AND p.post_status='publish' and p.post_type='post' ORDER BY {$post_date_str} {$order} " ;
 		//echo $sql;
 		$r = mysql_query($sql);
         if (!$r){
@@ -33,7 +38,8 @@ function get_nearly_articles($order, $start,$count, &$near_count, &$max_id, &$ap
         $near_count = 0;
 		$max_id=0;
         while( $row = mysql_fetch_array($r, MYSQL_ASSOC) ) {
-            $out=sprintf("<a href='/p/{$row["id"]}.html' >{$row['title']}_{$row['term']}</a> {$row['post_date']} </br>");
+            $out_date = $row[ $post_date_str ];
+            $out=sprintf("<a href='/p/{$row["id"]}.html' >{$row['title']}_{$row['term']}</a> {$out_date} </br>");
 			if ($near_count < $count && !in_array($row["title"], $filterout_repeat) )
 			{
 				$filterout_repeat[] = $row["title"];
@@ -100,7 +106,8 @@ function history_articles($mindex,$maxid,&$arch)
 		{
 			$start = $max_id + 1;
 		}
-    	$ret = get_nearly_articles("asc",$start, $history_batch,$near_count,$max_id,$append_out);
+		$post_date = 1;
+    	$ret = get_nearly_articles("asc",$start, $history_batch,$near_count,$max_id,$append_out, $post_date);
 		echo " create history i:{$i} start:{$start} near_count: {$near_count} max_id: {$max_id}\n";
 		if ($ret < 0)
 		{
@@ -194,13 +201,21 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 		$append_out = "<br/><br/> 最新文章:<br/>";
 		$near_count=0;
 		$max_id=0;
-		//去掉最近文章
-		$ret = get_nearly_articles("desc",0,6,$near_count, $max_id,$append_out);
+		//最近文章或者最近修改过文章
+        $post_date=1;
+		$ret = get_nearly_articles("desc",0,6,$near_count, $max_id,$append_out, $post_date);
 		if ($ret<0)
 		{
 			exit(0);
 		}
-
+		$content = $content.$append_out;
+		$append_out = "<br/> 最近修改文章:<br/>";
+        $post_date=0;
+		$ret = get_nearly_articles("desc",0,6,$near_count, $max_id,$append_out, $post_date);
+		if ($ret<0)
+		{
+			exit(0);
+		}
 		$content = $content.$append_out;
 		$append_out = "<br/>历史归档:<br/>";
 		$arch_array = array();
