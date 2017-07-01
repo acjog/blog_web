@@ -30,6 +30,10 @@
              {
                  $search_str=" AND searchengine is null ";
              }
+			 else
+			 {
+                 $search_str=" AND searchengine is not null ";
+			 }
 			 $sql = "SELECT pageid,viewtime, viewagent,viewip,viewstatus FROM {$g_dbname}.blogstat WHERE viewtime > '{$d_s}' AND viewtime <= '{$d_e}' AND pageid = {$id}  {$search_str} order by viewip desc ";
 			//$sql=sprintf($sql_f,$g_dbname, $d_s, $d_e);
 			$r = mysql_query($sql);
@@ -54,6 +58,10 @@
              {
                  $search_str=" AND searchengine is null ";
              }
+			 else
+			 {
+                 $search_str=" AND searchengine is not null ";
+			 }
 			 $sql_f = "SELECT pageid, count(*) as num FROM %s.blogstat WHERE viewtime > '%s' AND viewtime <= '%s' {$search_str}  GROUP BY pageid order by num desc limit {$N}";
 			$sql=sprintf($sql_f,$g_dbname, $d_s, $d_e);
 			//echo $sql;exit(0);
@@ -99,7 +107,7 @@
 		$filter = intval( $_GET['filter'] );
     }
     echo '<a href="/stat.php?filter=1">过滤搜索引擎</a><br/>';
-    echo '<a href="/stat.php?filter=0">不过滤搜索引擎</a><br/>';
+    echo '<a href="/stat.php?filter=0">搜索引擎访问</a><br/>';
     if ($pageid != 0)
     {
         echo "详细数据 - {$pageid} <br/>";
