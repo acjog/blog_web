@@ -63,7 +63,7 @@ if __name__ == '__main__':
         if rr:
             searchengine = rr.group(0)
             searchengine = ",searchengine='%s'" % searchengine
-        sql = "INSERT INTO testme set pageid=%s, viewtime='%s',viewip='%s', viewagent='%s', viewstatus=%s  %s " % (pageid, t_str, ip, agent,status_s, searchengine)
+        sql = "INSERT INTO blogstat set pageid=%s, viewtime='%s',viewip='%s', viewagent='%s', viewstatus=%s  %s " % (pageid, t_str, ip, agent,status_s, searchengine)
         #print sql
         remote_cur.execute(sql)
  
