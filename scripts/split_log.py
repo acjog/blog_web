@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
    #insert db
    re_id = re.compile("\"/p/([0-9]+).html\"$", re.U)
-   r_searchengine = re.compile("(Googlebot|YisouSpider|Baiduspider|Sogou web spider|360Spider|AhrefsBot|Yahoo! Slurp|bingbot|mj12bot|YandexBot|coccocbot|Baidu-YunGuanCe-SLABot)")
+   r_searchengine = re.compile("(Googlebot|YisouSpider|Baiduspider|Sogou web spider|360Spider|AhrefsBot|Yahoo! Slurp|bingbot|mj12bot|YandexBot|coccocbot|Baidu-YunGuanCe-SLABot|DuckDuckGo)")
    fp = open(bak_file)
    for line in fp:
         line = line.strip()
