@@ -274,7 +274,7 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 	}
     $out = $smarty->fetch($template_name);
     $filename = "{$install_path}/{$public_path}/p/{$id}.html";
-    $handle = fopen($filename, "w");
+    $handle = fopen($filename, "w+");
     if ($handle){
         fwrite($handle,$out);
         fclose($handle);

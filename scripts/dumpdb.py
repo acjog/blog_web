@@ -17,7 +17,7 @@ def createjson(id,path):
     remote_cur=remote_db.cursor()
     sql = "set names utf8"
     remote_cur.execute(sql)
-    sql = "SELECT id,post_name,post_title as title ,post_content as content ,UNIX_TIMESTAMP(post_date) as post_date,guid,post_type,post_status,UNIX_TIMESTAMP(post_modified) as post_modified  FROM zjwdb_110668.blog_posts as p  WHERE  post_status='publish' and post_type='post' "
+    sql = "SELECT id,post_name,post_title as title ,post_content as content ,UNIX_TIMESTAMP(post_date) as post_date,guid,post_type,post_status,UNIX_TIMESTAMP(post_modified) as post_modified  FROM %s.blog_posts as p  WHERE  post_status='publish' and post_type='post' " % g_db_name
     if id :
         sql += " AND id=%d" % id
     #print sql
@@ -37,14 +37,14 @@ def createjson(id,path):
 def createtaxonmy(path):
     global remote_db
     remote_cur=remote_db.cursor()
-    sql = "SELECT count(*)  FROM zjwdb_110668.blog_posts as p  WHERE p.id != 1050 and p.post_status='publish' and p.post_type='post' "
+    sql = "SELECT count(*)  FROM %s.blog_posts as p  WHERE p.id != 1050 and p.post_status='publish' and p.post_type='post' " % g_db_name
     remote_cur.execute(sql)
     results=remote_cur.fetchall()
     taxonmy={}
     taxonomy_type={}
     for row in results:   
          print 'total:%d' % row[0]
-    sql = "SELECT id,post_title as title,term.name,t.taxonomy as type,r.term_taxonomy_id as tax  FROM zjwdb_110668.blog_posts as p LEFT JOIN zjwdb_110668.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN zjwdb_110668.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN zjwdb_110668.blog_terms term ON  t.term_id=term.term_id  WHERE p.id != 1050 and p.post_status='publish'  and p.post_type='post' order by term.name asc "   
+    sql = "SELECT id,post_title as title,term.name,t.taxonomy as type,r.term_taxonomy_id as tax  FROM %s.blog_posts as p LEFT JOIN %s.blog_term_relationships as r ON p.id=r.object_id LEFT JOIN %s.blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN %s.blog_terms term ON  t.term_id=term.term_id  WHERE p.id != 1050 and p.post_status='publish'  and p.post_type='post' order by term.name asc "    % (g_db_name, g_db_name, g_db_name, g_db_name)
     remote_cur.execute(sql)
     results=remote_cur.fetchall()
     for row in results:
@@ -78,7 +78,7 @@ def createtaxonmy(path):
         out.append(tmp)
     tmp={'data':out}
     import codecs
-    file = codecs.open('%s/man/list.json.test'%path, 'w' ,"utf-8")
+    file = codecs.open('%s/man/list.json.test'%path, 'w+' ,"utf-8")
     dumpobj=json.dumps(tmp)
     file.write('initTree(%s)' % dumpobj)
 #    print tmp

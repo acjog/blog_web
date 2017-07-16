@@ -85,7 +85,7 @@ http {
        }
        location = /manage.php {
             auth_basic "Restricted"; 
-            auth_basic_user_file $document_root/pass_file.txt;
+            auth_basic_user_file passfile_path/pass_file.txt;
             fastcgi_pass   127.0.0.1:9000;
             #fastcgi_index  index.php;
             fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
@@ -93,7 +93,7 @@ http {
        }
        location = /stat.php {
             auth_basic "Restricted"; 
-            auth_basic_user_file $document_root/pass_file.txt;
+            auth_basic_user_file passfile_path/pass_file.txt;
             fastcgi_pass   127.0.0.1:9000;
             #fastcgi_index  index.php;
             fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
