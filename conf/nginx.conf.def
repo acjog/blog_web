@@ -17,7 +17,7 @@ http {
     include       mime.types;
     default_type  application/octet-stream;
 	server_tokens  off;
-    log_format  main  '"$time_local" - "$remote_addr" - "$status" - "$request_uri" ';
+    log_format  main  '"$time_local" - "$remote_addr" - "$http_user_agent" - "$status" - "$request_uri" ';
     #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
     #                  '$status $body_bytes_sent "$http_referer" '
     #                  '"$http_user_agent" "$http_x_forwarded_for"';
@@ -60,8 +60,7 @@ http {
         ssl_certificate_key private.key ;
 
         ssl_session_timeout  5m;
-
-        ssl_protocols  SSLv2 SSLv3 TLSv1;
+	    ssl_protocols  SSLv2 SSLv3 TLSv1.1 TLSv1.2;
         ssl_ciphers  HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers   on;
 
@@ -101,10 +100,10 @@ http {
        }
        location ~ upload.html$ {
             auth_basic "Restricted"; 
-            auth_basic_user_file $document_root/pass_file.txt;
+            auth_basic_user_file pass_file/pass_file.txt;
        } 
 
-       location ~ ^/proxy/(\w+\.)(bdimg\.com|cdncache\.org|douban\.com|gravatar\.com|qlogo\.cn|sinaimg\.cn)(\/.*)$ {
+	   location ~ ^/proxy/(\w+\.)(bdimg\.com|cdncache\.org|douban\.com|gravatar\.com|qlogo\.cn|sinaimg\.cn|sohu\.com)(\/.*)$ {
 				proxy_connect_timeout    30s;
 				proxy_read_timeout       30s;
 				proxy_pass	       http://$1$2$3;

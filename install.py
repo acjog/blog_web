@@ -29,6 +29,7 @@ if __name__ == "__main__":
 	os.system("mkdir -p  public_html/Public/Document/imgcdn/")
 	os.system("mkdir -p  public_html/p")	
 	os.system("mkdir -p  public_html/man")
+	os.system("mkdir -p  smarty")	
 
 	cmd = 	" sed 's/install_path/%s/' ./conf/nginx.conf.def > ./conf/nginx.conf.1 " % escaped_str( sys.argv[1] )
 	#print cmd
