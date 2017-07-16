@@ -36,4 +36,4 @@ if __name__ == "__main__":
 	cmd = " sed 's/passfile_path/%s/' ./conf/nginx.conf.1 > ./conf/nginx.conf " % escaped_str( sys.argv[2] )
 	#print cmd
 	os.system(cmd)
-	os.system("cd ../scripts; ln -s ../scripts/conf.php ./conf.php")
+	os.system("cd ./public_html; ln -s ../scripts/conf.php ./conf.php")
