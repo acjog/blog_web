@@ -100,7 +100,7 @@ http {
        }
        location ~ upload.html$ {
             auth_basic "Restricted"; 
-            auth_basic_user_file pass_file/pass_file.txt;
+            auth_basic_user_file passfile_path/pass_file.txt;
        } 
 
 	   location ~ ^/proxy/(\w+\.)(bdimg\.com|cdncache\.org|douban\.com|gravatar\.com|qlogo\.cn|sinaimg\.cn|sohu\.com)(\/.*)$ {

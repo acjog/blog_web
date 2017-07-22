@@ -283,7 +283,7 @@
 		  {
                       mkdir($year_dir);
 		  }
-                  $month_dir=$year_dir."/".date("m");
+                $month_dir=$year_dir."/".date("m");
 		  if (!file_exists($month_dir))
 		  {
                       mkdir($month_dir);
@@ -300,7 +300,7 @@
 			$r=move_uploaded_file($_FILES["file"]["tmp_name"],
 					$img_path);
                         if ($r){
-			    echo $img_path;
+			    echo "/".$img_path;
                         } else {
                             echo "move img file wrong";
                         }
@@ -492,7 +492,9 @@
        </head>
        <body>
        <div class="container">
-		<?php echo htmlspecialchars(' <span style="color:#000000;   font-size:0.83em;line-height:1.5em; font-weight:bold;">1.目录样式 </span> ' ); ?>
+		<?php echo htmlspecialchars(' <span style="color:#000000;   font-size:0.83em;line-height:1.5em; font-weight:bold;">1.目录样式 </span> ' ); 
+              echo '<br/><a href="https://cosx.me">返回首页</a><br/>'; 
+        ?>
        <form method="post" action="manage.php">
        <table>
        <tr><td><input name="title" id="title" type="text"  onfocus="setbg('title','#e5fff3');" style="width:600px"  value="<?php echo $title; ?>" /></td></tr>

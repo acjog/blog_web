@@ -31,7 +31,7 @@ $(document).ready(function(){
         if(data != null){
             $("#feedback").html("");
             var feeddata=data.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-            $("#feedback").append("<img src=\""+feeddata+"\" alt="请记得输入文字描述" />");
+			$("#feedback").append("<img src=\""+feeddata+"\" alt=\"请记得输入文字描述\" />");
             $("#upload_file").val('');
             var id=getQueryString("id");
             var ccstr="window.opener.document.all."+id+".innerHTML"+"='"+feeddata+"';";
