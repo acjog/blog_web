@@ -91,6 +91,7 @@
    <body>
    <center>
 <?php
+    echo '<br/><a href="https://cosx.me">返回首页</a><br/>'; 
     if ( isset($_GET['pageid']) )
     {
 
