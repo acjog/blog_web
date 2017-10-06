@@ -105,7 +105,7 @@ function init(){
         start=id.indexOf('_',0);
         if (start>0){
             start++;
-            window.open("/manage.php?p="+id.substring(start,id.length));
+            window.open("/main.php?p="+id.substring(start,id.length));
         }
         return false;
     });
@@ -189,9 +189,7 @@ function init(){
 	//写笔记
 	$("#new").click( function() {
 		id = getPageId();
-		window.location = "/manage.php?p=" + id;	
-		r =  "/manage.php?p=" + id;
-		console.log(r);
+		window.location = "/main.php?p=" + id;	
 	}
 	);
     //目录与标签选择

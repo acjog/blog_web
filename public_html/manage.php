@@ -6,10 +6,10 @@
     mysql_query("SET NAMES UTF8");
 
     function do_shortcode_tag_keep_escaped_tags($m){
-      //$a=$m[5];
-      $a=htmlspecialchars($m[5],ENT_QUOTES); //这里显示的字符，需要htmlspecialchars处理
-      if ($m[2]=='code'){
-          return sprintf("[%s %s]%s[/%s]",$m[2],$m[3],$a,$m[2]);
+      //var_dump( $m );
+      $a=htmlspecialchars($m[3],ENT_QUOTES); //这里显示的字符，需要htmlspecialchars处理
+      if ($m[1]=='code'){
+          return sprintf("[%s %s]%s[/%s]",$m[1],$m[2],$a,$m[1]);
       } else {
           return $a;
       }
@@ -26,9 +26,9 @@
         #exit(0);
         exec($cmd,$out,$r);
         if ($r!=0){
-	    print_r("<br/>");
+	        print_r("<br/>");
             print_r($r);
-	    print_r("<br/>");
+	        print_r("<br/>");
             print_r($out);
             echo "python dump directory出错";
             exit(0);
@@ -45,15 +45,18 @@
         }
         $cmd="cd {$install_path}/{$script_path}; {$php_path}/php {$install_path}/{$script_path}/page.php -p {$articleid} ";
         $r=0;
+        
         unset($out);
         $out=array();
         exec($cmd ,$out,$r);
+        //echo $cmd;
+        //exit(0);
         if ($r!=0){
-	    print_r("<br/>");
-	    print_r( $cmd );
-	    print_r("<br/>");
+	        print_r("<br/>");
+	        print_r( $cmd );
+	        print_r("<br/>");
             print_r($r);
-	    print_r("<br/>");
+	        print_r("<br/>");
             print_r($out);
             echo "php page.php article出错";
             exit(0);
@@ -65,9 +68,9 @@
         print_r($cmd);
         exec($cmd,$out,$r);
         if ($r!=0){
-	    print_r("<br/>");
+	        print_r("<br/>");
             print_r($r);
-	    print_r("<br/>");
+	        print_r("<br/>");
             print_r($out);
             echo "python makeindex 出错";
             exit(0);
@@ -197,10 +200,12 @@
             echo "文章既没有目录也没有标签";
             exit(0);
         }
- 
-        $pattern ='\[(\[?)(html|code)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
+        $pattern = '\[(html|code)([^\]]*)\](.*?)(\[\/\1\])';
+        //$pattern ='\[(\[?)(html|code)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
+
         $content=preg_replace_callback('/'.$pattern.'/s', 'do_shortcode_tag_keep_escaped_tags', $content);
-//        echo $content."<br/>";
+        echo $content."<br/>";
+        //exit(0);
         $sql=sprintf("INSERT INTO %s.blog_posts SET post_title='%s',post_content='%s',post_date=now(),post_modified=now(),post_status='publish',post_type='post', post_excerpt='%s' ",$g_dbname,$title,$content, $excerpt);
         echo $sql;
         $r = mysql_query($sql);
@@ -221,7 +226,11 @@
         if ($articleid){
             updateCatetory($articleid,$category,$tags);
             exepython($articleid);
-            echo "<script>window.location='/manage.php?p={$articleid}'</script>";
+            //echo "<script>window.location='/manage.php?p={$articleid}'</script>";
+            //echo "<script>window.location='/p/{$articleid}.html'; </script>";
+            echo "<script>window.open('/main.php?p={$articleid}','_top'); </script>";
+
+
         } else {
             echo "数据库出错";
         }
@@ -273,19 +282,19 @@
         {
 	    if ($_FILES["file"]["error"] > 0)
 	    {
-		echo "Return Code: " . $_FILES["file"]["error"] . "";
+		    echo "Return Code: " . $_FILES["file"]["error"] . "";
 	    }
 	    else
 	    {
                   date_default_timezone_set("PRC");
                   $year_dir="Public/Document/imgcdn/". date("Y");
-		  if (!file_exists($date_dir))
-		  {
+		          if (!file_exists($date_dir))
+		          {
                       mkdir($year_dir);
-		  }
-                $month_dir=$year_dir."/".date("m");
-		  if (!file_exists($month_dir))
-		  {
+		          }
+                  $month_dir=$year_dir."/".date("m");
+		          if (!file_exists($month_dir))
+		          {
                       mkdir($month_dir);
                   }
                   $img_path=$month_dir."/".md5($_FILES["file"]["tmp_name"]).".".$extension;
@@ -297,34 +306,44 @@
                   }
                   else
                   {
-			$r=move_uploaded_file($_FILES["file"]["tmp_name"],
-					$img_path);
-                        if ($r){
-			    echo "/".$img_path;
-                        } else {
-                            echo "move img file wrong";
-                        }
-	          }
-	     }
+			          $r=move_uploaded_file($_FILES["file"]["tmp_name"],
+					  $img_path);
+                      if ($r){
+			              echo "/".$img_path;
+                      } else {
+                          echo "move img file wrong";
+                      }
+	              }
+	        }
         }
         else
         {
-	    echo '上传准许的格式为"gif", "jpeg", "jpg", "png"';
+	        echo '上传准许的格式为"gif", "jpeg", "jpg", "png"';
         }
         echo "</textarea>";
     } else if ($action=='modify'){
        $articleid=$_POST['p'];
        $content=$_POST['content'];
+       //var_dump( $content );
+       //exit(0);
        $excerpt=addslashes( $_POST['seo'] );
-       $pattern ='\[(\[?)(html|code)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
+       $pattern = '\[(html|code)([^\]]*)\](.*?)(\[\/\1\])';
+       //$pattern ='\[(\[?)(html|code)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
        $content=preg_replace_callback('/'.$pattern.'/s', 'do_shortcode_tag_keep_escaped_tags', $content);
+       //var_dump( $content );
+       //exit(0);
        $content=addslashes($content);
+       //var_dump( $content );
+       //exit(0);
+
        $title=addslashes(htmlspecialchars($_POST['title']));
        if (isset($articleid))
        {
            $articleid=intval($articleid); 
            if ($articleid>0){
-               $sql=sprintf("UPDATE %s.blog_posts SET post_title='%s' ,post_content='%s',post_modified=now(),post_excerpt='%s'   WHERE id=%d ",$g_dbname,$title,$content,$excerpt, $articleid );
+               $sql=sprintf("UPDATE %s.blog_posts SET post_title='%s' ,post_content='%s',post_modified=now(),post_excerpt='%s' WHERE id=%d ",$g_dbname,$title,$content,$excerpt, $articleid );
+               //var_dump($sql);
+               //exit(0);
                $r = mysql_query($sql);
                if (!$r){
                    echo "执行: ".$sql." 出错:".mysql_error();
@@ -340,11 +359,14 @@
                     updateCatetory($articleid,$category,$tags);
                }
                exepython($articleid);
-               echo "<script>window.location='/manage.php?p={$articleid}'</script>";
+               //echo "<script>window.location='/manage.php?p={$articleid}'</script>";
+               echo "<script>window.open('/main.php?p={$articleid}','_top'); </script>";
+               //echo "<script>window.location='/p/{$articleid}.html'; </script>";
+
            }
        }
     }else {
-       //show pages 
+       // show pages 
        $title='';
        $content='';
        $allcategory=getCatbyId(0,'category');        
@@ -371,6 +393,8 @@
                $mycategory=getCatbyId($articleid,'category');
                $mytags=getCatbyId($articleid,'post_tag');               
            }
+           //var_dump($content);
+           //exit(0);
        }
 ?>
        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -396,7 +420,7 @@
 			<!-- height: 120px; -->
 			border: 3px solid #cccccc;
 			padding: 5px;
-			font-family: Tahoma, sans-serif;
+			<!-- font-family: Tahoma, sans-serif; -->
 			background-image: url(bg.jpg);
 			background-position: bottom right;
 			background-repeat: no-repeat;
@@ -409,10 +433,6 @@
 		{
 			if (myid === "styled") 
             {
-				if (2 < 1)
-				{
-					return;
-				}
 				edit_state = 0;
 				now = new Date();
 				var aa = now.getMinutes() % 10;
@@ -442,6 +462,11 @@
        function uploadimg(obj){
            window.open("/upload.html?id="+obj,null,"height=600,width=600");
        }
+       function test(){
+           my_str = window.href;
+           my_str = "hello world";
+           console.log(my_str);
+       }
        function  addtag()
        {
            var termname=document.getElementById("termname");
@@ -460,10 +485,10 @@
 //           window.alert(data);
            var xmlhttp;
            if (window.XMLHttpRequest){//code for IE7+,Chrome
-		  xmlhttp=new XMLHttpRequest();
+		       xmlhttp=new XMLHttpRequest();
            } else {// code for IE6, IE5
-		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	   }
+		       xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	       }
            var url="/manage.php";
            xmlhttp.open("POST",url,false);
            xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
@@ -493,12 +518,14 @@
        <body>
        <div class="container">
 		<?php echo htmlspecialchars(' <span style="color:#000000;   font-size:0.83em;line-height:1.5em; font-weight:bold;">1.目录样式 </span> ' ); 
-              echo '<br/><a href="https://cosx.me">返回首页</a><br/>'; 
+              echo '<br/><a href="https://cosx.me" target="_top">返回首页</a><br/>'; 
+              echo '<a href="" onclick="test()" >测试</a><br/>'; 
         ?>
-       <form method="post" action="manage.php">
+       <!-- target="rsp_frame" -->
+       <form method="post" action="manage.php" target="rsp_frame">
        <table>
-       <tr><td><input name="title" id="title" type="text"  onfocus="setbg('title','#e5fff3');" style="width:600px"  value="<?php echo $title; ?>" /></td></tr>
-       <tr><td><textarea name="content" id="styled" onfocus="setbg('styled','#e5fff3');" rows="30" cols="80"><?php echo $content; ?></textarea></td></tr>
+       <tr><td><code><input name="title" id="title" type="text"  onfocus="setbg('title','#e5fff3');" style="width:600px"  value="<?php echo $title; ?>" /></code></td></tr>
+       <tr><td><code><textarea name="content" id="styled" onfocus="setbg('styled','#e5fff3');" rows="30" cols="80"><?php echo $content; ?></textarea></code></td></tr>
        <tr><td><textarea name="seo" id="seo" rows="6" cols="80"><?php echo $seo; ?></textarea></td></tr>
        <?php if (!empty($allcategory)){?>
            <tr><td  id='category'>目录:

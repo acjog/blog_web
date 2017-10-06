@@ -43,7 +43,6 @@ function get_nearly_articles($order, $start,$count, &$near_count, &$max_id, &$ap
 			if ($near_count < $count && !in_array($row["title"], $filterout_repeat) )
 			{
 				$filterout_repeat[] = $row["title"];
-            	//$append_out = $append_out.$out;
 				$append_out_array[] = $out;
 				$near_count = $near_count + 1;
 				if ($row["id"] > $max_id)
@@ -102,10 +101,8 @@ function history_articles($mindex,$maxid,&$arch)
     	$content = "";
 		$history_batch=100;
 		$near_count=0;
-		if ($max_id > $start)
-		{
-			$start = $max_id + 1;
-		}
+		$start = $max_id + 1;
+
 		$post_date = 1;
     	$ret = get_nearly_articles("asc",$start, $history_batch,$near_count,$max_id,$append_out, $post_date);
 		echo " create history i:{$i} start:{$start} near_count: {$near_count} max_id: {$max_id}\n";
@@ -134,6 +131,22 @@ function history_articles($mindex,$maxid,&$arch)
             fclose($handle);
         }
 	}
+}
+
+//check article id own tag
+function check_article_tag( $id, $tag )
+{
+    $ret = false;
+    $sql = "SELECT id,post_title as title,term.name,t.taxonomy as type,r.term_taxonomy_id as tax  FROM blog_posts as p LEFT JOIN blog_term_relationships as r     ON p.id=r.object_id LEFT JOIN blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN blog_terms term ON  t.term_id=term.term_id  WHERE p.post_status='publish' AND p.post_type='post' AND p.id = {$id} AND term.name ='{$tag}' ";
+    $r_dup = mysql_query($sql);
+	if (!$r_dup){
+   		echo "执行: ".$sql." 出错:".mysql_error();
+	    exit(0);
+	}
+	while( $result_tmp = mysql_fetch_array($r_dup, MYSQL_ASSOC) ) {
+        $ret = true;
+    }
+    return $ret;
 }
 
 ini_set('date.timezone','Asia/Shanghai');
@@ -168,13 +181,29 @@ if (!$r){
 
 while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     $title = $result['title'];
+    $id = $result['id'];
     $content = $result['content'];
-    $content = preg_replace("/(?<!>)\\r\\n/","<br />",$content);
-    $pattern ='\[(\[?)(sourcecode|source|code|as3|actionscript3|bash|shell|coldfusion|cf|clojure|clj|cpp|c| i|pas|pascal|diff|patch|erl|erlang|fsharp|groovy|java|jfx|javafx|js|jscript|javascript|tex|matlab|objc|obj t|ps|powershell|py|python|splus|rails|rb|ror|ruby|scala|sql|vb|vbnet|xml|xhtml|xslt|html)(?![\w-])([^\]\/] ?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
-    $content=preg_replace_callback('/'.$pattern.'/s', 'do_shortcode_tag_keep_escaped_tags', $content);
+    $ret = check_article_tag( $id, 'markdown');
+    if ($ret)
+    {
+        $filename = "{$install_path}/{$public_path}/p/tmp.txt";
+        $handle = fopen($filename, "w+");
+        if ($handle){
+            fwrite($handle,$content);
+            fclose($handle);
+        }
+        $cmd = "pandoc -o {$install_path}/{$public_path}/p/tmp1.html {$filename} ";
+        exec($cmd);
+        $content = file_get_contents("{$install_path}/{$public_path}/p/tmp1.html");
+    }
+    else
+    {
+        $content = preg_replace("/(?<!>)\\r\\n/","<br />",$content);
+        $pattern ='\[(\[?)(sourcecode|source|code|as3|actionscript3|bash|shell|coldfusion|cf|clojure|clj|cpp|c| i|pas|pascal|diff|patch|erl|erlang|fsharp|groovy|java|jfx|javafx|js|jscript|javascript|tex|matlab|objc|obj t|ps|powershell|py|python|splus|rails|rb|ror|ruby|scala|sql|vb|vbnet|xml|xhtml|xslt|html)(?![\w-])([^\]\/] ?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
+        $content=preg_replace_callback('/'.$pattern.'/s', 'do_shortcode_tag_keep_escaped_tags', $content);
+    }
     $post_modified = "最后更新日期:".$result['post_modified'];
     $post_date = "日期:".$result['post_date'];
-    $id = $result['id'];
     $pageid = $id;
 
 	$seo = $result['post_excerpt'];
@@ -220,11 +249,8 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 		$append_out = "<br/>历史归档:<br/>";
 		$arch_array = array();
 		history_articles(2,1064,$arch_array);
-//		history_articles(0,0,$arch_array);
-
-		//var_dump($arch_array);
+		//history_articles(0,0,$arch_array);
 		$arch_array =	array_reverse($arch_array);
-		//var_dump($arch_array);
 		foreach ($arch_array as $arch_url)
 		{
 			$append_out = $append_out."<a href={$arch_url} target='_blank'>{$arch_url} </a><br/> ";
@@ -242,16 +268,10 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
     //$smarty->display("page.tpl");
 	//检查是否需要插入支持latex的mathjax插件js，因为mathjax加载js较大
     //这里判断当文章在math_latex标签下时，则需要插入
-    $sql = "SELECT id,post_title as title,term.name,t.taxonomy as type,r.term_taxonomy_id as tax  FROM blog_posts as p LEFT JOIN blog_term_relationships as r     ON p.id=r.object_id LEFT JOIN blog_term_taxonomy t ON r.term_taxonomy_id=t.term_taxonomy_id LEFT JOIN blog_terms term ON  t.term_id=term.term_id  WHERE p.post_status='publish' AND p.post_type='post' AND p.id = {$id} AND term.name ='math_latex' ";
-	$r_dup = mysql_query($sql);
-	if (!$r_dup){
-   		echo "执行: ".$sql." 出错:".mysql_error();
-	    exit(0);
-	}
-	while( $result_tmp = mysql_fetch_array($r_dup, MYSQL_ASSOC) ) {
-		if ( count($result_tmp) )
-		{
-			$smarty->assign("HeadAppend", '<script type="text/x-mathjax-config">
+    $ret = check_article_tag($id, 'math_latex');
+	if ( $ret )
+	{
+		$smarty->assign("HeadAppend", '<script type="text/x-mathjax-config">
   MathJax.Hub.Config({
   jax: ["input/TeX","output/HTML-CSS", "output/PreviewHTML"],
   extensions: ["tex2jax.js","MathMenu.js","MathZoom.js", "fast-preview.js", "AssistiveMML.js"],
@@ -261,11 +281,10 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
 });
 
 </script> ');
-			$smarty->assign("JSAppend", '<script type="text/javascript" async
+		$smarty->assign("JSAppend", '<script type="text/javascript" async
   src="/Public/Document/js/MathJax/MathJax.js?config=TeX-AMS_CHTML">
 </script>');
-		}	
-	} 
+	}	
 
 	$template_name = "page.tpl";
 	if ( $pageid == $index_page_id )
@@ -292,7 +311,8 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
         }
     }
     echo $filename."\n";
-    exec("cd ../{$public_path}/p; chown apache -R ./");
+    exec("cd {$install_path}/{$public_path}/p/; chown apache {$id}.html");
+    exec("cd  {$install_path}/{$public_path}/; chown apache  ./wiki.html");
 }
 
 
