@@ -518,6 +518,8 @@
        <body>
        <div class="container">
 		<?php echo htmlspecialchars(' <span style="color:#000000;   font-size:0.83em;line-height:1.5em; font-weight:bold;">1.目录样式 </span> ' ); 
+              echo "<br/>";
+              echo htmlspecialchars(' <font color="blue">颜色</font>');
               echo '<br/><a href="https://cosx.me" target="_top">返回首页</a><br/>'; 
               echo '<a href="" onclick="test()" >测试</a><br/>'; 
         ?>
