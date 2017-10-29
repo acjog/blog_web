@@ -49,7 +49,7 @@ function getPageId()
 {
 	var reg = new RegExp(".*\/([0-9]+)\.html.*");
 	var r = window.location.href.match(reg);
-	if (r != null) return r[1]; return "new";
+	if (r != null) return r[1]; return "";
 }
 
 function  tagordirectory(){
@@ -226,6 +226,12 @@ function init(){
     $("#select").change();
     //标签或目录高亮
     tagordirectory();
+	//如果不是手机屏幕，则文章使用全屏
+	var id  = getPageId();
+	if (id != "" && screen.width>= 800)
+	{
+		$("section.layout").toggleClass("fullscreen","true");
+	}
 }
 
 function createTree($li,data)
