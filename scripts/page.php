@@ -191,6 +191,10 @@ while( $result = mysql_fetch_array($r, MYSQL_ASSOC) ) {
         if ($handle){
             fwrite($handle,$content);
             fclose($handle);
+        } else
+        {
+            echo "create file {$filename} error ";
+            exit(1);    
         }
         $cmd = "pandoc -o {$install_path}/{$public_path}/p/tmp1.html {$filename} ";
         exec($cmd);
