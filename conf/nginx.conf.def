@@ -29,6 +29,7 @@ http {
     fastcgi_intercept_errors on;
     #keepalive_timeout  0;
     keepalive_timeout  65;
+	client_max_body_size 20m;
 
     #gzip  on;
 	proxy_cache_path    install_path/cache/proxy  levels=1:2 keys_zone=pnc:300m inactive=30d max_size=100m;

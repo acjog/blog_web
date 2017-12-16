@@ -268,7 +268,7 @@
     { 
          $allowedExts = array("gif", "jpeg", "jpg", "png","bmp");
          $temp = explode(".", $_FILES["file"]["name"]);
-         $extension = end($temp);
+         $extension = strtolower(end($temp));
          echo "<textarea>";
          if ((($_FILES["file"]["type"] == "image/gif")
 			|| ($_FILES["file"]["type"] == "image/jpeg")
@@ -277,7 +277,7 @@
 			|| ($_FILES["file"]["type"] == "image/x-png")
 			|| ($_FILES["file"]["type"] == "image/png")
 			|| ($_FILES["file"]["type"] == "image/bmp"))
-		&& ($_FILES["file"]["size"] < 2000000)
+		&& ($_FILES["file"]["size"] < 5000000)
 		&& in_array($extension, $allowedExts))
         {
 	    if ($_FILES["file"]["error"] > 0)
